@@ -14,39 +14,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import org.koin.compose.viewmodel.koinViewModel
 import wang.mycroft.disney.ui.disney.viewmodel.DisneyDetailViewModel
 
 @Composable
 fun DisneyDetailScreen(
-    viewModel: DisneyDetailViewModel,
-    modifier: Modifier = Modifier,
+    viewModel: DisneyDetailViewModel = koinViewModel(),
     onBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
-    Box(modifier = modifier) {
-        DisneyDetailContent(Modifier.fillMaxSize(), state, onBack)
-    }
+    DisneyDetailContent(state, onBack)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DisneyDetailContent(
-    modifier: Modifier = Modifier,
     state: DisneyDetailViewModel.UiState,
-    onBack: () -> Unit
+    onBackClick: () -> Unit
 ) {
-    Scaffold(topBar = {
-        TopAppBar(
-            title = { Text(state.character?.name ?: "Disney") },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(state.character?.name ?: "Disney") },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
                 }
-            }
-        )
-    }) {
+            )
+        },
+        modifier = Modifier.fillMaxSize()
+    ) {
         if (state.character != null) {
-            Column(modifier.verticalScroll(rememberScrollState()).padding(16.dp)) {
+            Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
                 AsyncImage(
                     model = state.character.imageUrl,
                     contentDescription = state.character.name,
