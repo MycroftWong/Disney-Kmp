@@ -16,6 +16,7 @@ class DisneyDetailViewModel(
     private val favoriteCharacterQueries: FavoriteCharacterQueries,
     private val handle: SavedStateHandle,
 ) : ViewModel() {
+
     private val disneyDetail: DisneyDetail = handle.toRoute()
 
     val uiState: StateFlow<UiState> = combine(

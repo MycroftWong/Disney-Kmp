@@ -12,14 +12,14 @@ import wang.mycroft.disney.ui.disney.screen.DisneyDetailScreen
 data class DisneyDetail(val id: Long)
 
 fun NavController.navigateToDisneyDetail(characterId: Long, navOptions: NavOptions? = null) =
-    navigate(DisneyDetail(characterId))
+    navigate(DisneyDetail(characterId), navOptions)
 
 fun NavGraphBuilder.disneyDetailScreen(
     onBackClick: () -> Unit
 ) {
-    composable<DisneyDetail> { backStackEntry ->
+    composable<DisneyDetail> {
         DisneyDetailScreen(
-            onBack = onBackClick,
+            onBackClick = onBackClick,
         )
     }
 }

@@ -42,7 +42,6 @@ androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navi
 # compose
 
 components-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-multiplatform" }
-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 
 # ktor
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }

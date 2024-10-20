@@ -28,10 +28,13 @@ class DisneyViewModel(
         favoriteCharacterQueries.selectAll().asFlow().map { it.executeAsList() }
     ) { loading, characters, favoriteCharacters ->
         val favoriteIds = favoriteCharacters.filter { it.favorite == 1L }.map { it.characterId }
-        UiState.Data(characters
-            .map { item ->
-                DisneyCharacterItem(item, favoriteIds.contains(item.id))
-            })
+        UiState.Data(
+            loading = loading,
+            disneyCharacterItems = characters
+                .map { item ->
+                    DisneyCharacterItem(item, favoriteIds.contains(item.id))
+                }
+        )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(1000), UiState.Loading
     )
@@ -69,9 +72,14 @@ class DisneyViewModel(
             try {
                 withContext(Dispatchers.IO) {
                     favoriteCharacterQueries.transaction {
-                        val favorite = favoriteCharacterQueries.selectById(characterId).executeAsOneOrNull()
+                        val favorite =
+                            favoriteCharacterQueries.selectById(characterId).executeAsOneOrNull()
                         if (favorite == null) {
-                            favoriteCharacterQueries.insert(characterId, 1, Clock.System.now().toString())
+                            favoriteCharacterQueries.insert(
+                                characterId,
+                                1,
+                                Clock.System.now().toString()
+                            )
                         } else {
                             favoriteCharacterQueries.delete(characterId)
                         }
@@ -85,6 +93,9 @@ class DisneyViewModel(
 
     sealed interface UiState {
         data object Loading : UiState
-        data class Data(val disneyCharacterItems: List<DisneyCharacterItem>) : UiState
+        data class Data(
+            val loading: Boolean,
+            val disneyCharacterItems: List<DisneyCharacterItem>
+        ) : UiState
     }
 }

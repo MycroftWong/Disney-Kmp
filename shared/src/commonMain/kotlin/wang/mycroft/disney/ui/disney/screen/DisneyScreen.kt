@@ -4,12 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Switch
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,85 +27,84 @@ import wang.mycroft.disney.ui.disney.viewmodel.DisneyViewModel
 
 @Composable
 internal fun DisneyScreen(
-    viewModel: DisneyViewModel = koinViewModel(),
+    disneyViewModel: DisneyViewModel = koinViewModel(),
     navigateToDetail: (Long) -> Unit,
 ) {
-    val state by viewModel.uiState.collectAsState()
-    Box(modifier = Modifier.fillMaxSize()) {
-        DisneyContent(
-            Modifier.fillMaxSize(),
-            state,
-            { viewModel.refresh() },
-            navigateToDetail
-        ) { characterId ->
-            viewModel.toggleFavorite(characterId)
-        }
-    }
+    val state by disneyViewModel.uiState.collectAsState()
+    DisneyContent(
+        state = state,
+        onRefresh = disneyViewModel::refresh,
+        navigateToDetail = navigateToDetail,
+        onFavoriteClick = disneyViewModel::toggleFavorite,
+    )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DisneyContent(
-    modifier: Modifier = Modifier,
     state: DisneyViewModel.UiState,
     onRefresh: () -> Unit,
     navigateToDetail: (Long) -> Unit,
     onFavoriteClick: (Long) -> Unit
 ) {
-    val loadingCharacters = (state == DisneyViewModel.UiState.Loading)
-    val refreshState = rememberPullRefreshState(loadingCharacters, onRefresh = onRefresh)
 
-    Box(modifier = modifier.pullRefresh(refreshState)) {
-        LazyColumn(Modifier.fillMaxSize()) {
-            when (state) {
-                DisneyViewModel.UiState.Loading -> {
-                    item {
-                        Box(Modifier.fillParentMaxSize()) {
-                            Text(
-                                text = "Loading characters...",
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-                    }
+    Column(Modifier.fillMaxSize()) {
+
+        TopAppBar(title = { Text("Disney") })
+
+        when (state) {
+            DisneyViewModel.UiState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "Loading characters...")
                 }
+            }
 
-                is DisneyViewModel.UiState.Data -> {
-                    items(
-                        state.disneyCharacterItems.size,
-                        key = { state.disneyCharacterItems[it].character.id }) { index ->
-                        DisneyItem(
-                            item = state.disneyCharacterItems[index],
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
-                            onItemClick = {
-                                navigateToDetail(it)
-                            },
-                            onFavoriteClick = { characterId ->
-                                onFavoriteClick(characterId)
-                            }
+            is DisneyViewModel.UiState.Data -> {
+                val refreshState = rememberPullToRefreshState()
+
+                val disneyCharacterItems = state.disneyCharacterItems
+
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .pullToRefresh(
+                            isRefreshing = state.loading,
+                            state = refreshState,
+                            onRefresh = onRefresh,
                         )
-                    }
-                    if (state.disneyCharacterItems.isEmpty()) {
-                        item {
-                            Box(Modifier.fillParentMaxSize()) {
-                                Text(
-                                    text = "No characters found",
-                                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    LazyColumn(Modifier.fillMaxSize()) {
+                        if (disneyCharacterItems.isNotEmpty()) {
+                            items(
+                                disneyCharacterItems.size,
+                                key = { disneyCharacterItems[it].character.id }) { index ->
+                                DisneyItem(
+                                    item = disneyCharacterItems[index],
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentHeight(),
+                                    onItemClick = navigateToDetail,
+                                    onFavoriteClick = { characterId ->
+                                        onFavoriteClick(characterId)
+                                    }
                                 )
                             }
+                            item {
+                                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+                            }
+                        } else {
+                            item {
+                                Box(Modifier.fillParentMaxSize()) {
+                                    Text(
+                                        text = "No characters found",
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                            }
                         }
                     }
-
                 }
             }
         }
-        PullRefreshIndicator(
-            loadingCharacters,
-            refreshState,
-            Modifier.align(Alignment.TopCenter),
-            contentColor = Color(0xFF0099CC)
-        )
     }
 }
 

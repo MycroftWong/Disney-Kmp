@@ -1,8 +1,17 @@
 package wang.mycroft.disney
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -29,20 +38,37 @@ fun App(applicationContext: ApplicationContext) {
     KoinApplication(application = {
         modules(CoreModule(applicationContext), ViewModelModule())
     }) {
-        DisneyTheme {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colors.background
-            ) {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = Disney) {
-                    disneyScreen(
-                        onBackClick = {},
-                        onDisneyCharacterClick = navController::navigateToDisneyDetail
-                    )
+        val navController = rememberNavController()
 
-                    disneyDetailScreen {
-                        navController.popBackStack()
+        DisneyTheme {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+                contentWindowInsets = WindowInsets(0),
+            ) { padding ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .consumeWindowInsets(padding)
+                        .windowInsetsPadding(
+                            WindowInsets.safeDrawing.only(
+                                WindowInsetsSides.Horizontal,
+                            ),
+                        ),
+                ) {
+                    Box(modifier = Modifier.consumeWindowInsets(WindowInsets(0))) {
+                        NavHost(navController = navController, startDestination = Disney) {
+                            disneyScreen(
+                                onBackClick = {},
+                                onDisneyCharacterClick = navController::navigateToDisneyDetail
+                            )
+
+                            disneyDetailScreen {
+                                navController.popBackStack()
+                            }
+                        }
                     }
                 }
             }

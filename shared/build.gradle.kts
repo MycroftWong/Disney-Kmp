@@ -45,12 +45,11 @@ kotlin {
             api(libs.ktor.utils)
 
             implementation(libs.kotlinx.datetime)
-            implementation(libs.material3)
 
             api(compose.runtime)
             api(compose.foundation)
             api(compose.animation)
-            api(compose.material)
+            api(compose.material3)
             api(compose.components.resources)
 
             implementation(libs.androidx.navigation.compose)
