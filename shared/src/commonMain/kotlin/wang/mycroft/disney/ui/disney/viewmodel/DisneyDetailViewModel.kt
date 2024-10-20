@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import app.cash.sqldelight.coroutines.asFlow
 import kotlinx.coroutines.flow.*
 import wang.mycroft.disney.data.DisneyCharacter
 import wang.mycroft.disney.data.DisneyCharacterQueries
@@ -20,9 +19,8 @@ class DisneyDetailViewModel(
     private val disneyDetail: DisneyDetail = handle.toRoute()
 
     val uiState: StateFlow<UiState> = combine(
-        disneyCharacterQueries.selectById(disneyDetail.id).asFlow().map { it.executeAsOneOrNull() },
-        favoriteCharacterQueries.selectById(disneyDetail.id).asFlow()
-            .map { it.executeAsOneOrNull() }
+        disneyCharacterQueries.selectById(disneyDetail.id),
+        favoriteCharacterQueries.selectById(disneyDetail.id)
     ) { character, favoriteCharacter ->
         UiState(character, favoriteCharacter != null)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UiState(character = null))

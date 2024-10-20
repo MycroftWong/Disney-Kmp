@@ -7,7 +7,9 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.kotlinParcelize)
-    alias(libs.plugins.sqldelight)
+//    alias(libs.plugins.kotlinCocoapods)
+//    alias(libs.plugins.sqldelight)
+    alias(libs.plugins.skie)
 }
 
 kotlin {
@@ -25,8 +27,8 @@ kotlin {
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
             baseName = "shared"
             isStatic = true
         }
@@ -66,7 +68,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
 
-            implementation(libs.sqldelight.coroutines.extensions)
+//            implementation(libs.sqldelight.coroutines.extensions)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -82,13 +84,13 @@ kotlin {
 
             implementation(libs.koin.android)
 
-            implementation(libs.sqldelight.android.driver)
+//            implementation(libs.sqldelight.android.driver)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
 
-            implementation(libs.sqldelight.native.driver)
+//            implementation(libs.sqldelight.native.driver)
         }
     }
 }
@@ -105,6 +107,7 @@ android {
     }
 }
 
+/*
 sqldelight {
     databases {
         create("Database") {
@@ -112,3 +115,4 @@ sqldelight {
         }
     }
 }
+*/

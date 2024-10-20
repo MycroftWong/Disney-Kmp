@@ -12,9 +12,7 @@ import org.koin.dsl.module
 import wang.mycroft.disney.ApplicationContext
 import wang.mycroft.disney.api.ApiService
 import wang.mycroft.disney.api.ApiServiceImpl
-import wang.mycroft.disney.data.Database
 import wang.mycroft.disney.data.DisneyCharacterQueries
-import wang.mycroft.disney.data.DriverFactory
 import wang.mycroft.disney.data.FavoriteCharacterQueries
 
 fun CoreModule(applicationContext: ApplicationContext) = module {
@@ -38,6 +36,7 @@ fun CoreModule(applicationContext: ApplicationContext) = module {
         ApiServiceImpl(get())
     }
 
+/*
     single<Database> {
         val driverFactory = DriverFactory(applicationContext)
         val driver = driverFactory.createDriver()
@@ -45,13 +44,14 @@ fun CoreModule(applicationContext: ApplicationContext) = module {
         // Do more work with the database (see below).
         database
     }
+*/
 
     single<DisneyCharacterQueries> {
-        get<Database>().disneyCharacterQueries
+        DisneyCharacterQueries()
     }
 
     single<FavoriteCharacterQueries> {
-        get<Database>().favoriteCharacterQueries
+        FavoriteCharacterQueries()
     }
 
 }
