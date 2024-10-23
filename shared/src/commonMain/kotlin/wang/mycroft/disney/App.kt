@@ -1,5 +1,7 @@
 package wang.mycroft.disney
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -20,8 +22,7 @@ import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.request.crossfade
 import org.koin.compose.KoinApplication
-import wang.mycroft.disney.di.CoreModule
-import wang.mycroft.disney.di.ViewModelModule
+import wang.mycroft.disney.di.appModule
 import wang.mycroft.disney.ui.disney.navigation.Disney
 import wang.mycroft.disney.ui.disney.navigation.disneyDetailScreen
 import wang.mycroft.disney.ui.disney.navigation.disneyScreen
@@ -36,7 +37,7 @@ fun App(applicationContext: ApplicationContext) {
             .build()
     }
     KoinApplication(application = {
-        modules(CoreModule(applicationContext), ViewModelModule())
+        modules(appModule(applicationContext))
     }) {
         val navController = rememberNavController()
 
@@ -59,15 +60,20 @@ fun App(applicationContext: ApplicationContext) {
                         ),
                 ) {
                     Box(modifier = Modifier.consumeWindowInsets(WindowInsets(0))) {
-                        NavHost(navController = navController, startDestination = Disney) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Disney,
+                            enterTransition = { EnterTransition.None },
+                            exitTransition = { ExitTransition.None },
+                            popEnterTransition = { EnterTransition.None },
+                            popExitTransition = { ExitTransition.None },
+                        ) {
                             disneyScreen(
                                 onBackClick = {},
                                 onDisneyCharacterClick = navController::navigateToDisneyDetail
                             )
 
-                            disneyDetailScreen {
-                                navController.popBackStack()
-                            }
+                            disneyDetailScreen(onBackClick = navController::popBackStack)
                         }
                     }
                 }

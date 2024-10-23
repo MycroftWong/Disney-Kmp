@@ -13,24 +13,29 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
+import org.koin.android.annotation.KoinViewModel
 import wang.mycroft.disney.api.ApiService
-import wang.mycroft.disney.data.DisneyCharacterQueries
-import wang.mycroft.disney.data.FavoriteCharacterQueries
+import wang.mycroft.disney.db.entity.DisneyCharacter
+import wang.mycroft.disney.db.DisneyCharacterDao
+import wang.mycroft.disney.db.entity.FavoriteCharacter
+import wang.mycroft.disney.db.FavoriteCharacterDao
 import wang.mycroft.disney.ui.disney.DisneyCharacterItem
 
+@KoinViewModel
 class DisneyViewModel(
     private val apiService: ApiService,
-    private val disneyCharacterQueries: DisneyCharacterQueries,
-    private val favoriteCharacterQueries: FavoriteCharacterQueries
+    private val disneyCharacterDao: DisneyCharacterDao,
+    private val favoriteCharacterDao: FavoriteCharacterDao,
 ) : ViewModel() {
 
     private val _loading = MutableStateFlow(false)
 
     val uiState: StateFlow<UiState> = combine(
         _loading,
-        disneyCharacterQueries.selectAll(),
-        favoriteCharacterQueries.selectAll()
+        disneyCharacterDao.selectAll(),
+        favoriteCharacterDao.selectAll()
     ) { loading, characters, favoriteCharacters ->
+
         val favoriteIds = favoriteCharacters.filter { it.favorite == 1L }.map { it.characterId }
         UiState.Data(
             loading = loading,
@@ -54,16 +59,16 @@ class DisneyViewModel(
     private fun loadCharacters() {
         viewModelScope.launch {
             val characters = apiService.loadCharacters(1)
-            withContext(Dispatchers.IO) {
-                characters.data.forEach { character ->
-                    disneyCharacterQueries.insert(
+            characters.data.forEach { character ->
+                disneyCharacterDao.insert(
+                    DisneyCharacter(
                         character.id,
                         character.createdAt,
                         character.imageUrl,
                         character.name,
                         character.url
                     )
-                }
+                )
             }
         }
     }
@@ -73,15 +78,17 @@ class DisneyViewModel(
             _loading.value = true
             try {
                 withContext(Dispatchers.IO) {
-                    val favorite = favoriteCharacterQueries.selectById(characterId).firstOrNull()
+                    val favorite = favoriteCharacterDao.selectById(characterId).firstOrNull()
                     if (favorite == null) {
-                        favoriteCharacterQueries.insert(
-                            characterId,
-                            1,
-                            Clock.System.now().toString()
+                        favoriteCharacterDao.insert(
+                            FavoriteCharacter(
+                                characterId,
+                                1,
+                                Clock.System.now().toString()
+                            )
                         )
                     } else {
-                        favoriteCharacterQueries.delete(characterId)
+                        favoriteCharacterDao.deleteById(characterId)
                     }
                 }
             } finally {

@@ -1,6 +1,6 @@
 package wang.mycroft.disney.ui.disney
 
-import wang.mycroft.disney.data.DisneyCharacter
+import wang.mycroft.disney.db.entity.DisneyCharacter
 
 
 data class DisneyCharacterItem(
