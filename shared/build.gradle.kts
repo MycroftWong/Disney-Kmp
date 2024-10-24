@@ -61,7 +61,6 @@ kotlin {
 
                 implementation(libs.androidx.navigation.compose)
                 implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.cio)
 
                 implementation(project.dependencies.platform(libs.koin.bom))
                 implementation(libs.koin.core)
@@ -78,7 +77,6 @@ kotlin {
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.androidx.sqlite.bundled)
             }
-
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -93,7 +91,7 @@ kotlin {
         }
 
         iosMain.dependencies {
-//            implementation(libs.ktor.client.darwin)
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
@@ -144,5 +142,5 @@ room {
 }
 
 ksp {
-    arg("KOIN_USE_COMPOSE_VIEWMODEL","true")
+    arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
 }
