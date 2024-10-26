@@ -19,5 +19,6 @@ fun appModule(applicationContext: ApplicationContext) = listOf(
     AppModule().module,
     CoroutinesDispatcherModule().module,
     NetworkModule().module,
-    DatabaseModule().module
+    DatabaseModule().module,
+    RepositoryModule().module,
 )

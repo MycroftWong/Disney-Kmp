@@ -52,6 +52,7 @@ kotlin {
                 api(libs.ktor.client.content.negotiation)
 
                 implementation(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.atomicfu)
 
                 api(compose.runtime)
                 api(compose.foundation)
@@ -76,6 +77,11 @@ kotlin {
 
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.androidx.sqlite.bundled)
+
+                implementation(libs.androidx.datastore.core.okio)
+                implementation(libs.androidx.datastore.preferences.core)
+
+                implementation(libs.kermit)
             }
         }
         commonTest.dependencies {
@@ -86,6 +92,8 @@ kotlin {
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.work.runtime)
             implementation(libs.androidx.preference)
+
+            implementation(libs.ktor.client.okhttp)
 
             implementation(libs.koin.android)
         }

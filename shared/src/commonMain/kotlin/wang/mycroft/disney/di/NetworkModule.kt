@@ -1,6 +1,8 @@
 package wang.mycroft.disney.di
 
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngineConfig
+import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
@@ -24,7 +26,7 @@ class NetworkModule {
 
     @Single
     fun httpClient(json: Json): HttpClient {
-        return HttpClient {
+        return HttpClient(DefaultHttpEngine) {
             install(Logging) {
                 logger = Logger.DEFAULT
                 level = LogLevel.ALL
@@ -40,3 +42,5 @@ class NetworkModule {
         return ApiServiceImpl(httpClient)
     }
 }
+
+internal expect val DefaultHttpEngine: HttpClientEngineFactory<HttpClientEngineConfig>

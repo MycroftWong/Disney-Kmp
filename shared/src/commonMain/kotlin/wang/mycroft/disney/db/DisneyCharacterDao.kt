@@ -14,7 +14,7 @@ interface DisneyCharacterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(character: DisneyCharacter)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(characters: List<DisneyCharacter>)
 
     @Query("SELECT * FROM t_disney_character")

@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.DisposableEffect
-import wang.mycroft.disney.App
+import wang.mycroft.disney.ui.app.App
 import wang.mycroft.disney.ApplicationContext
 
 class MainActivity : ComponentActivity() {

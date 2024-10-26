@@ -2,6 +2,7 @@ package wang.mycroft.disney.ui.disney.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,17 +59,21 @@ class DisneyViewModel(
 
     private fun loadCharacters() {
         viewModelScope.launch {
-            val characters = apiService.loadCharacters(1)
-            characters.data.forEach { character ->
-                disneyCharacterDao.insert(
-                    DisneyCharacter(
-                        character.id,
-                        character.createdAt,
-                        character.imageUrl,
-                        character.name,
-                        character.url
+            runCatching {
+                val characters = apiService.loadCharacters(1)
+                characters.data.forEach { character ->
+                    disneyCharacterDao.insert(
+                        DisneyCharacter(
+                            character.id,
+                            character.createdAt,
+                            character.imageUrl,
+                            character.name,
+                            character.url
+                        )
                     )
-                )
+                }
+            }.onFailure {
+                Logger.e(it) { "Failed to load characters" }
             }
         }
     }
