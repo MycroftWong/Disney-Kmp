@@ -1,5 +1,7 @@
 package wang.mycroft.disney.di
 
+import coil3.network.NetworkFetcher
+import coil3.network.ktor3.KtorNetworkFetcherFactory
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
@@ -40,6 +42,11 @@ class NetworkModule {
     @Single
     fun apiService(httpClient: HttpClient): ApiService {
         return ApiServiceImpl(httpClient)
+    }
+
+    @Single
+    fun networkFetcherFactory(httpClient: HttpClient): NetworkFetcher.Factory {
+        return KtorNetworkFetcherFactory(httpClient)
     }
 }
 

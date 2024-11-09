@@ -11,7 +11,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
+import coil3.network.NetworkFetcher
+import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.delay
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
@@ -24,14 +27,19 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun App(applicationContext: ApplicationContext) {
-    setSingletonImageLoaderFactory { context ->
-        ImageLoader.Builder(context)
-            .crossfade(true)
-            .build()
-    }
     KoinApplication(application = {
         modules(appModule(applicationContext))
     }) {
+        val networkFetcherFactory: NetworkFetcher.Factory = koinInject()
+        setSingletonImageLoaderFactory { context ->
+            ImageLoader.Builder(context)
+                .components {
+                    add(networkFetcherFactory)
+                }
+                .crossfade(true)
+                .build()
+        }
+
         val appNavController = rememberAppNavController()
 
         var showWelcome by rememberSaveable {
@@ -88,7 +96,9 @@ fun App(applicationContext: ApplicationContext) {
                             actions = {
                                 TextButton(
                                     onClick = {
-                                        appNavController.navigateToTopLevelDestination(TopLevelDestination.Home)
+                                        appNavController.navigateToTopLevelDestination(
+                                            TopLevelDestination.Home
+                                        )
                                     },
                                     modifier = Modifier.weight(1F),
                                 ) {
@@ -96,7 +106,9 @@ fun App(applicationContext: ApplicationContext) {
                                 }
                                 TextButton(
                                     onClick = {
-                                        appNavController.navigateToTopLevelDestination(TopLevelDestination.Settings)
+                                        appNavController.navigateToTopLevelDestination(
+                                            TopLevelDestination.Settings
+                                        )
                                     },
                                     modifier = Modifier.weight(1F),
                                 ) {

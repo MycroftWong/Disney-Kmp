@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.androidLibrary)
@@ -25,6 +26,7 @@ kotlin {
         }
     }
 
+    val xcf = XCFramework()
     listOf(
         iosX64(),
         iosArm64(),
@@ -35,6 +37,7 @@ kotlin {
             isStatic = true
             // Required when using NativeSQLiteDriver
             linkerOpts.add("-lsqlite3")
+            xcf.add(this)
         }
     }
 
@@ -151,4 +154,8 @@ room {
 
 ksp {
     arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
+}
+
+project.getTasksByName("embedAndSignAppleFrameworkForXcode", true).forEach { item ->
+    println("embedAndSignAppleFrameworkForXcode ${item::class}")
 }
