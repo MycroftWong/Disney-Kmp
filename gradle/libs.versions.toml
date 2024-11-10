@@ -11,8 +11,6 @@ androidx-test-junit = "1.2.1"
 androidx-work-runtime = "2.9.1"
 androidx-preference = "1.2.1"
 
-compose-android = "1.7.0"
-compose-multiplatform = "1.7.0"
 skie = "0.9.3"
 
 material3 = "1.7.0"
@@ -28,7 +26,7 @@ androidx-datastore = "1.1.1"
 koin = "4.0.0"
 koin-annotations = "2.0.0-Beta1"
 
-coil = "3.0.1"
+coil = "3.0.2"
 
 kermit = "2.0.4"
 
@@ -53,7 +51,7 @@ androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-p
 
 # compose
 
-components-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-multiplatform" }
+components-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose" }
 
 # ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -96,7 +94,7 @@ kotlinParcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = 
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }
 
 room = { id = "androidx.room", version.ref = "androidx-room" }
