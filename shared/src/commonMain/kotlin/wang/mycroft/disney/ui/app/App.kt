@@ -14,6 +14,7 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.NetworkFetcher
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
+import coil3.svg.SvgDecoder
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.delay
 import org.koin.compose.KoinApplication
@@ -35,6 +36,7 @@ fun App(applicationContext: ApplicationContext) {
             ImageLoader.Builder(context)
                 .components {
                     add(networkFetcherFactory)
+                    add(SvgDecoder.Factory())
                 }
                 .crossfade(true)
                 .build()
